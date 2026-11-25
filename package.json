@@ -1,0 +1,1 @@
+{"dependencies":{"@coral-xyz/anchor":"0.32.1","@magicblock-labs/ephemeral-rollups-sdk":"0.14.3","@solana/web3.js":"^1.98.0"},"devDependencies":{"@types/node":"^22.0.0","tsx":"^4.19.0","typescript":"^5.7.0"},"license":"ISC","name":"blitz-roll-arena","scripts":{"e2e":"tsx tests/e2e.ts"},"type":"module","version":"0.1.0"}

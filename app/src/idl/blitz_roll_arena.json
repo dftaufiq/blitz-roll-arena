@@ -1,0 +1,946 @@
+{
+  "address": "GDQEgMDsQqbKxjcZX3jragWPFhyVaGxDs8qM2xzstwjG",
+  "metadata": {
+    "name": "blitz_roll_arena",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Blitz Roll Arena — real-time VRF dice duels on MagicBlock Ephemeral Rollups"
+  },
+  "instructions": [
+    {
+      "name": "callback_roll",
+      "discriminator": [
+        104,
+        43,
+        141,
+        38,
+        167,
+        29,
+        52,
+        209
+      ],
+      "accounts": [
+        {
+          "name": "vrf_program_identity",
+          "docs": [
+            "Scoped VRF identity PDA, bound to this program. Its presence as a signer proves",
+            "the callback was issued by the VRF program for this program."
+          ],
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "randomness",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "player_index",
+          "type": "u8"
+        },
+        {
+          "name": "_client_seed",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "cancel_game",
+      "discriminator": [
+        121,
+        194,
+        154,
+        118,
+        103,
+        235,
+        149,
+        52
+      ],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player1",
+          "docs": [
+            "Only the creator can cancel; the refund goes back to them."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_game_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claim_pot",
+      "discriminator": [
+        210,
+        85,
+        35,
+        217,
+        204,
+        65,
+        38,
+        17
+      ],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player1",
+          "writable": true
+        },
+        {
+          "name": "player2",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Anyone can trigger the payout."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_game_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_game",
+      "discriminator": [
+        124,
+        69,
+        75,
+        66,
+        184,
+        220,
+        72,
+        206
+      ],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player1",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "game_id",
+          "type": "u64"
+        },
+        {
+          "name": "stake",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "delegate_game",
+      "docs": [
+        "Set a specific validator via the first remaining account, see",
+        "https://docs.magicblock.gg/pages/get-started/how-integrate-your-program/local-setup"
+      ],
+      "discriminator": [
+        116,
+        183,
+        70,
+        107,
+        112,
+        223,
+        122,
+        210
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "buffer_game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                226,
+                12,
+                139,
+                227,
+                234,
+                175,
+                59,
+                7,
+                250,
+                57,
+                140,
+                186,
+                154,
+                251,
+                151,
+                253,
+                250,
+                53,
+                108,
+                198,
+                94,
+                113,
+                125,
+                120,
+                33,
+                101,
+                210,
+                149,
+                98,
+                183,
+                101,
+                35
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner_program",
+          "address": "GDQEgMDsQqbKxjcZX3jragWPFhyVaGxDs8qM2xzstwjG"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "game_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "join_game",
+      "discriminator": [
+        107,
+        112,
+        18,
+        38,
+        56,
+        173,
+        60,
+        128
+      ],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_game_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "process_undelegation",
+      "discriminator": [
+        196,
+        28,
+        41,
+        206,
+        48,
+        37,
+        51,
+        167
+      ],
+      "accounts": [
+        {
+          "name": "base_account",
+          "writable": true
+        },
+        {
+          "name": "buffer",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  110,
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  101,
+                  45,
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "base_account"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                181,
+                183,
+                0,
+                225,
+                242,
+                87,
+                58,
+                192,
+                204,
+                6,
+                34,
+                1,
+                52,
+                74,
+                207,
+                151,
+                184,
+                53,
+                6,
+                235,
+                140,
+                229,
+                25,
+                152,
+                204,
+                98,
+                126,
+                24,
+                147,
+                128,
+                167,
+                62
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "account_seeds",
+          "type": {
+            "vec": "bytes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "roll_dice",
+      "discriminator": [
+        27,
+        140,
+        230,
+        215,
+        37,
+        178,
+        226,
+        114
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle_queue",
+          "writable": true
+        },
+        {
+          "name": "program_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vrf_program",
+          "address": "Vrf1RNUjXmQGjmQrQLvJHs9SNkvDJEsRVFPkfSQUwGz"
+        },
+        {
+          "name": "slot_hashes",
+          "address": "SysvarS1otHashes111111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_game_id",
+          "type": "u64"
+        },
+        {
+          "name": "client_seed",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "undelegate_game",
+      "discriminator": [
+        40,
+        145,
+        154,
+        66,
+        48,
+        111,
+        127,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "game_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_game_id",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Game",
+      "discriminator": [
+        27,
+        90,
+        166,
+        125,
+        74,
+        100,
+        121,
+        18
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CannotJoinOwnGame",
+      "msg": "You cannot join your own game."
+    },
+    {
+      "code": 6001,
+      "name": "GameFull",
+      "msg": "Game is already full."
+    },
+    {
+      "code": 6002,
+      "name": "GameNotFull",
+      "msg": "Game does not have two players yet."
+    },
+    {
+      "code": 6003,
+      "name": "GameSettled",
+      "msg": "This game has already been settled."
+    },
+    {
+      "code": 6004,
+      "name": "GameDecided",
+      "msg": "The match is already decided."
+    },
+    {
+      "code": 6005,
+      "name": "NotAPlayer",
+      "msg": "Only a player of this game can do this."
+    },
+    {
+      "code": 6006,
+      "name": "AlreadyRolled",
+      "msg": "You already rolled (or a roll is pending) this round."
+    },
+    {
+      "code": 6007,
+      "name": "RollNotPending",
+      "msg": "No VRF roll is pending for this player."
+    },
+    {
+      "code": 6008,
+      "name": "InvalidPlayerIndex",
+      "msg": "Invalid player index in VRF callback."
+    },
+    {
+      "code": 6009,
+      "name": "NoWinnerYet",
+      "msg": "The match has no winner yet."
+    },
+    {
+      "code": 6010,
+      "name": "AlreadyPaid",
+      "msg": "The pot has already been paid out."
+    },
+    {
+      "code": 6011,
+      "name": "WrongPlayerAccount",
+      "msg": "Wrong player account for this game."
+    },
+    {
+      "code": 6012,
+      "name": "CannotCancelStarted",
+      "msg": "Cannot cancel a game that already has two players."
+    },
+    {
+      "code": 6013,
+      "name": "MathOverflow",
+      "msg": "Arithmetic overflow."
+    }
+  ],
+  "types": [
+    {
+      "name": "Game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "game_id",
+            "type": "u64"
+          },
+          {
+            "name": "player1",
+            "type": "pubkey"
+          },
+          {
+            "name": "player2",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          },
+          {
+            "name": "paid",
+            "type": "bool"
+          },
+          {
+            "name": "round",
+            "type": "u8"
+          },
+          {
+            "name": "roll1",
+            "type": "u8"
+          },
+          {
+            "name": "roll2",
+            "type": "u8"
+          },
+          {
+            "name": "winner",
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

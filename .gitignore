@@ -1,0 +1,9 @@
+.anchor
+target
+node_modules
+dist
+test-ledger
+*.log
+**/keypair*.json
+*-keypair.json
+.DS_Store
